@@ -1,0 +1,78 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "willow",
+  "name": "Bayex",
+  "css": [
+    "global.css"
+  ],
+  "colors": {
+    "primary": "#5865F2",
+    "light": "#8EA0FF",
+    "dark": "#404EED"
+  },
+  "favicon": "favicon.png",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "introduction",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Architecture",
+            "pages": [
+              "architecture/overview",
+              "architecture/ct-framework"
+            ]
+          },
+          {
+            "group": "Smart Contracts",
+            "pages": [
+              "contracts/ct-wrapper",
+              "contracts/addresses",
+              "contracts/uniswap-v4-integration"
+            ]
+          },
+          {
+            "group": "Developer Guide",
+            "pages": [
+              "guides/wrapper-interaction",
+              "guides/relayer-setup"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": []
+    }
+  },
+  "logo": {
+    "light": "/images/hero-light.png",
+    "dark": "/images/hero-dark.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/Bayex-Labs"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Launch App",
+      "href": "https://www.bayex.xyz"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://twitter.com/bayexyz",
+      "github": "https://github.com/Bayex-Labs"
+    }
+  }
+}

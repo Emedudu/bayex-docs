@@ -1,0 +1,7 @@
+/* Override Mintlify logo size constraints */
+a[href="/"] img, 
+header img {
+  height: 4rem !important; /* 48px */
+  max-height: 4rem !important;
+  width: auto !important;
+}

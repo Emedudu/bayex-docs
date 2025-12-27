@@ -1,0 +1,69 @@
+---
+title: CTWrapper Interaction
+description: "Interacting with the Bayex CTWrapper"
+---
+
+# CTWrapper Interaction Guide
+
+The `CTWrapper` is the primary entry point for converting Conditional Tokens (ERC1155) into tradeable ERC20 assets. This guide covers the key interactions for developers.
+
+## Contract Addresses
+
+For deployment addresses, please refer to the [Deployments](/contracts/addresses) page.
+
+## Key Methods
+
+### 1. Wrapping Tokens
+
+To wrap tokens, you must first have the underlying ERC1155 tokens from the Conditional Tokens Framework.
+
+```solidity
+function wrap(bytes32 conditionId, uint256[] calldata amounts) external;
+```
+
+**Parameters:**
+- `conditionId`: The unique identifier of the condition (question).
+- `amounts`: An array of amounts to wrap for each outcome slot.
+
+**Example (Ethers.js):**
+```javascript
+const wrapper = new ethers.Contract(mockWrapperAddress, wrapperAbi, signer);
+await wrapper.wrap(conditionId, [amountYes, amountNo]);
+```
+
+### 2. Unwrapping Tokens
+
+Unwrapping burns the ERC20 tokens and returns the underlying ERC1155s.
+
+```solidity
+function unwrap(bytes32 conditionId, uint256 amount) external;
+```
+
+**Note**: In the current implementation, `unwrap` typically unwraps a specific amount of *all* outcome tokens associated with that condition back to the user's wallet.
+
+### 3. Deploying Converted Tokens
+
+Before a condition can be traded, its ERC20 representations must be deployed.
+
+```solidity
+function deployToken(bytes32 conditionId, string calldata name, string calldata symbol) external returns (address);
+```
+
+- **Determinism**: This uses `CREATE3`, so the address is deterministic based on the `conditionId`.
+- **First Settler**: The first person to call this sets the name/symbol, but the address is constant.
+
+## Event Listeners
+
+Listen for `TokenDeployed` events to discover new markets.
+
+```solidity
+event TokenDeployed(
+    bytes32 indexed conditionId, 
+    address lenToken, 
+    bytes32 salt, 
+    string name, 
+    string symbol
+);
+```
+
+This is indexed by The Graph/Goldsky to populate the frontend.

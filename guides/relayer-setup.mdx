@@ -1,0 +1,45 @@
+---
+title: Secure Relayer
+description: "Handling private keys securely"
+---
+
+# Secure Relayer Setup
+
+Bayex uses a relayer system to subsidize gas for user onboarding or specific interactions. Security is paramount when handling the relayer's private keys.
+
+## The Problem
+Storing private keys on the client-side (e.g., in `.env` exposed to the browser) is a critical security vulnerability.
+
+## The Solution: External Relayer Service
+
+We utilize the **Polymarket Relayer** (`relayer-v2`) for executing gasless transactions. This removes the need for managing a hot wallet on your own backend for standard operations.
+
+### Architecture
+
+1.  **Client Signature**: The user signs a typed data structure (EIP-712) in their browser. This signature grants permission for the specific action (e.g., `CTWrapper.wrap`).
+2.  **Relayer Submission**: The frontend sends this signature and the transaction payload to the Relayer API.
+3.  **Execution**: The Relayer verifies the payload, pays the MATIC gas fees, and submits the transaction to the Polygon network.
+
+### API Endpoint
+
+**Production:** `https://relayer-v2.polymarket.com/`
+
+### Implementation Flow
+
+Instead of sending transactions directly via `window.ethereum`:
+
+1.  Construct the meta-transaction payload.
+2.  Request user signature via `eth_signTypedData_v4`.
+3.  POST the payload to the Relayer.
+
+```typescript
+// Example Payload Construction
+const payload = {
+  to: contractAddress,
+  data: encodedFunctionData,
+  signature: userSignature,
+  // ... other relayer specific fields
+};
+
+await axios.post("https://relayer-v2.polymarket.com/transactions", payload);
+```

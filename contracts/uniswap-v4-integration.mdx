@@ -1,0 +1,33 @@
+---
+title: Uniswap V4 Integration
+description: "How Bayex builds on Uniswap V4"
+---
+
+# Uniswap V4 Integration
+
+Bayex uses Uniswap V4 to provide a flexible and efficient trading environment.
+
+## Pool Architecture
+
+### Pool Keys
+Each market in Bayex corresponds to a Pool in Uniswap V4. The `PoolKey` consists of:
+- **Currency0 / Currency1**: The two outcome tokens (or one outcome token and collateral).
+- **Fee**: Dynamic or static fee tier.
+- **Hooks**: The address of the Bayex hook contract.
+
+### Custom Hooks (`BayexHook`)
+
+We deploy custom hooks to manage the lifecycle of the pools.
+
+#### Usage
+1. **Initializing Pools**: Ensures pools are initialized with the correct parameters.
+2. **Swap Callbacks**: executed before and after swaps. Can be used for analytics, enforcing trading hours, or dynamic fees.
+
+## Trading Interface
+
+Bayex utilizes the `Quoter` contract for accurate pricing and the `UniversalRouter` (or a custom adaptation) via `V4Planner` to execute swaps.
+
+### `V4Planner`
+A helper class/utility used in the SDK to construct the encoded commands for the Universal Router.
+- **`addAction`**: Adds steps like `SWAP_EXACT_IN_SINGLE`.
+- **Encoding**: Handles the complex encoding required by V4's router.

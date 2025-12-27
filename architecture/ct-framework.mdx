@@ -1,0 +1,32 @@
+---
+title: CT Framework
+description: "Understanding Conditional Tokens in Bayex"
+---
+
+# Conditional Tokens Framework
+
+The **Conditional Tokens Framework (CTF)** is the underlying protocol used by Polymarket. Bayex builds upon this to enable liquid trading of these outcomes.
+
+## Core Concepts
+
+### Conditions
+A "condition" is a question to be answered. It is defined by:
+- **Oracle**: The address authorized to report the outcome.
+- **Question ID**: An identifier for the specific question.
+- **Outcome Slot Count**: The number of possible outcomes (e.g., 2 for Binary).
+
+### Position IDs
+Each outcome has a unique `collectionId` derived from the condition. Bayex maps these ID's to ERC20 tokens.
+
+## Bayex Adaptation
+
+Bayex simplifies the user experience by Abstracting the complexity of 1155s.
+
+1. **Collateral**: Users deposit collateral (e.g., USDC).
+2. **Splitting via Wrapper**: The wrapper calls `splitPosition` on the CTF.
+3. **Tokenization**: Instead of the user holding the 1155 tokens directly, the Wrapper holds them and mints 1:1 ERC20 representations.
+
+### Why Wrap to ERC20?
+- **Uniswap V4 Compatibility**: AMMs primarily support ERC20 pairs.
+- **Composability**: Easier to use in other DeFi protocols.
+- **Wallet Support**: Better visibility in standard wallets completely.

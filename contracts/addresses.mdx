@@ -1,0 +1,37 @@
+---
+title: Contract Addresses
+sidebarTitle: Deployments
+description: "Official deployed addresses for the Bayex Protocol on Polygon Mainnet."
+---
+
+<Warning>
+  **Network: Polygon (MATIC)**
+  
+  Please ensure you are interacting with the correct contracts on the Polygon PoS network.
+</Warning>
+
+## Core Contracts
+
+| Contract | Address | Description |
+| :--- | :--- | :--- |
+| **CTWrapper** | `0xa76b15e80e2455e4c7f82f3863ef726e4bc707f4` | Wraps ERC-1155 tokens to ERC-20. |
+| **CTF** | `0x4d97dcd97ec945f40cf65f87097ace5ea0476045` | Polymarket's Conditional Tokens Framework. |
+
+## External Dependencies
+
+### Uniswap V4
+We utilize the official Uniswap V4 deployments on Polygon.
+
+<Card title="View Uniswap V4 Deployments" icon="link" href="https://docs.uniswap.org/contracts/v4/deployments#polygon-137">
+  Click here to view the official list of PoolManager and hook addresses.
+</Card>
+
+## Relayer
+
+| Service | Endpoint |
+| :--- | :--- |
+| **Relayer API** | `https://relayer-v2.polymarket.com/` |
+
+<Note>
+This relayer is used for submitting EIP-712 meta-transactions, enabling gasless interactions for users.
+</Note>

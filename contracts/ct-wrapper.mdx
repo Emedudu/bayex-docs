@@ -1,0 +1,54 @@
+---
+title: CT Wrapper
+description: "The CTWrapper Smart Contract"
+---
+
+# CT Wrapper Contract
+
+The `CTWrapper` is a pivotal contract in the Bayex ecosystem. It serves as a bridge between the **ERC1155** tokens used by the Conditional Tokens Framework and the **ERC20** standard required by most DeFi applications, including Uniswap V4.
+
+## Key Functions
+
+### `wrap`
+Wraps ERC1155 conditional tokens into ERC20 tokens.
+- **Inputs**: `ctid` (uint256), `amount` (uint256), `name` (string), `symbol` (string).
+- **Logic**: Transfers the ERC1155 tokens from the user to the Wrapper contract using `safeTransferFrom`. Mints the corresponding amount of ERC20 tokens to the user.
+- **Design**: Encodes `name` and `symbol` as data for the transfer.
+
+### `unwrap`
+Unwraps ERC20 tokens back into the underlying ERC1155 conditional tokens.
+- **Inputs**: `ctid` (uint256), `amount` (uint256).
+- **Logic**: Burns the user's ERC20 tokens and transfers the stored ERC1155 tokens back to the user via `safeTransferFrom`.
+- **Event**: Emits `Unwrapped(caller, ctid, amount)`.
+
+### `predictTokenAddress` (CREATE3)
+Returns the deterministic address for a given condition ID before deployment.
+- **Logic**: `CREATE3.predictDeterministicAddress(keccak256(ctid), address(this))`
+- **Benefit**: Allows the frontend to know the token address without querying the blockchain state significantly.
+
+## Admin Functions
+
+The contract owner has specific privileges to maintain metadata quality:
+
+*   **`updateBaseURI`**: sets the base URI for the deployed ERC20 tokens.
+*   **`updateTrimSize`**: Updates the string trimming size (default: **32 bytes**).
+*   **`updateTokenMetadata`**: Fixes the metadata (name/symbol/uri) of an already deployed token if initial values were incorrect.
+
+## Design Decisions
+
+### ERC1155 Receiver Hooks
+The contract implements `onERC1155Received` and `onERC1155BatchReceived`.
+- **Feature**: This enables "push" wrapping patterns. Users can send tokens *to* the wrapper to wrap them in a single transaction.
+- **Auto-Wrap**: If tokens are received with data encoding `(string name, string symbol)`, they are automatically wrapped and ERC20s are minted to the sender.
+
+### Gas Optimization
+- **String Trimming**: To prevent gas griefing or excessive storage costs, names and symbols are trimmed to a fixed size (default: 32 bytes) using the internal `_trim` function.
+- **CREATE3**: Ensures address determinism regardless of the salt or bytecode changes, simplifying indexer logic.
+
+## Events
+
+```solidity
+event TokenDeployed(uint256 indexed ctid, address token, bytes32 salt);
+event Wrapped(address indexed caller, uint256 indexed ctid, uint256 amount);
+event Unwrapped(address indexed caller, uint256 indexed ctid, uint256 amount);
+```

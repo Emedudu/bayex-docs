@@ -1,0 +1,55 @@
+---
+title: Protocol Architecture
+sidebarTitle: Overview
+description: "Understanding the components that power Bayex's gasless, high-frequency trading experience."
+---
+
+<Note>
+  **Technical Deep Dive**
+  
+  This section explores the underlying infrastructure that makes Bayex possible.
+</Note>
+
+## System Components
+
+<CardGroup cols={1}>
+  <Card title="Smart Accounts (Safe)" icon="shield-halved">
+    User wallets on Bayex are not EOAs (Externally Owned Accounts). Instead, we deploy a **Safe** (formerly Gnosis Safe) for every user.
+
+    **Compatibility:** We utilize the exact same proxy architecture as **Polymarket**. This means if you have an existing Polymarket account, it is **100% compatible** and usable on Bayex immediately.
+
+    This Smart Account acts as a proxy, allowing for:
+
+    *   <Icon icon="circle-check" iconType="solid" color="#22c55e" /> **Gasless Transactions (Sponsored)**
+    *   <Icon icon="circle-check" iconType="solid" color="#22c55e" /> **Batched Operations (Wrap + Swap)**
+    *   <Icon icon="circle-check" iconType="solid" color="#22c55e" /> **Session Keys (Future Scope)**
+  </Card>
+
+  <Card title="The Relayer" icon="network-wired">
+    Bayex utilizes a centralized (but strictly non-custodial) relayer service to submit transactions on behalf of users.
+
+    `User Signature (EIP-712) -> Relayer API -> Blockchain -> Execution`
+
+    This ensures users never need MATIC (Polygon gas token) to interact with the protocol.
+  </Card>
+
+  <Card title="CT Wrapper Contract" icon="box-open">
+    The core innovation. Polymarket uses the Conditional Tokens Framework (ERC-1155). To make these compatible with Uniswap V4 (which works best with ERC-20s), we use a Wrapper.
+
+    <CardGroup cols={2}>
+      <Card title="Wrap">
+        User sends ERC-1155 -> Wrapper locks it -> Mints ERC-20 (CTERC20)
+      </Card>
+      <Card title="Unwrap">
+        User burns ERC-20 -> Wrapper unlocks ERC-1155 -> Sends to User
+      </Card>
+    </CardGroup>
+  </Card>
+
+  <Card title="Uniswap V4 Pool Manager" icon="server">
+    We use the singleton `PoolManager` contract to host all our prediction market pools.
+
+    *   **Hooks:** (Currently minimal) Future capability to add dynamic fees or KYC logic.
+    *   **Flash Accounting:** Efficient multi-hop swaps or complex portfolio rebalancing in a single transaction.
+  </Card>
+</CardGroup>
